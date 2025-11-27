@@ -10,6 +10,7 @@ export default function Home() {
   const [posts, setPosts] = useState<PostWithAnalysis[]>([]);
   const [filteredPosts, setFilteredPosts] = useState<PostWithAnalysis[]>([]);
   const [selectedPost, setSelectedPost] = useState<PostWithAnalysis | null>(null);
+  const [selectedPostsAtLocation, setSelectedPostsAtLocation] = useState<PostWithAnalysis[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [filters, setFilters] = useState<FilterOptions>({});
   const [showIsolatedAreas, setShowIsolatedAreas] = useState(true);
@@ -122,7 +123,10 @@ export default function Home() {
         <main className="flex-1 relative min-h-0">
           <DisasterMap
             posts={filteredPosts}
-            onMarkerClick={setSelectedPost}
+            onMarkerClick={(post, postsAtLocation) => {
+              setSelectedPost(post);
+              setSelectedPostsAtLocation(postsAtLocation || [post]);
+            }}
             showIsolatedAreas={showIsolatedAreas}
           />
           
@@ -245,7 +249,14 @@ export default function Home() {
       )}
 
       {/* Detail Panel */}
-      <DetailPanel post={selectedPost} onClose={() => setSelectedPost(null)} />
+      <DetailPanel 
+        post={selectedPost} 
+        postsAtLocation={selectedPostsAtLocation}
+        onClose={() => {
+          setSelectedPost(null);
+          setSelectedPostsAtLocation([]);
+        }} 
+      />
     </div>
   );
 }

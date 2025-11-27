@@ -12,7 +12,7 @@ declare global {
 
 interface DisasterMapProps {
   posts: PostWithAnalysis[];
-  onMarkerClick: (post: PostWithAnalysis) => void;
+  onMarkerClick: (post: PostWithAnalysis, postsAtLocation?: PostWithAnalysis[]) => void;
   showIsolatedAreas?: boolean;
 }
 
@@ -238,29 +238,63 @@ export default function DisasterMap({ posts, onMarkerClick, showIsolatedAreas = 
     const newPolygons: google.maps.Polygon[] = [];
     const newPolylines: google.maps.Polyline[] = [];
 
-    // Create markers for posts
+    // Group posts by location (same lat/lng)
+    const locationGroups = new Map<string, PostWithAnalysis[]>();
+    const LOCATION_TOLERANCE = 0.0001; // ~11 meters tolerance for grouping
+
     posts.forEach((post) => {
       if (!post.latitude || !post.longitude) return;
 
-      const severity = post.analysis?.severity || null;
+      // Create a location key (rounded to tolerance)
+      const latKey = Math.round(post.latitude / LOCATION_TOLERANCE) * LOCATION_TOLERANCE;
+      const lngKey = Math.round(post.longitude / LOCATION_TOLERANCE) * LOCATION_TOLERANCE;
+      const locationKey = `${latKey.toFixed(6)},${lngKey.toFixed(6)}`;
+
+      if (!locationGroups.has(locationKey)) {
+        locationGroups.set(locationKey, []);
+      }
+      locationGroups.get(locationKey)!.push(post);
+    });
+
+    // Create markers for each location group
+    locationGroups.forEach((postsAtLocation, locationKey) => {
+      const [lat, lng] = locationKey.split(',').map(Number);
+      const postCount = postsAtLocation.length;
+      
+      // Use the first post for marker properties, but show count if multiple
+      const firstPost = postsAtLocation[0];
+      const severity = firstPost.analysis?.severity || null;
       const color = getMarkerColor(severity);
 
+      // Determine marker size based on post count
+      const baseScale = 8;
+      const scale = postCount > 1 ? Math.min(baseScale + postCount * 1.5, 16) : baseScale;
+
       const marker = new window.google.maps.Marker({
-        position: { lat: post.latitude, lng: post.longitude },
+        position: { lat, lng },
         map,
-        title: post.location_text || 'Unknown location',
+        title: postCount > 1 
+          ? `${postCount} laporan di ${firstPost.location_text || 'lokasi ini'}`
+          : firstPost.location_text || 'Unknown location',
         icon: {
           path: window.google.maps.SymbolPath.CIRCLE,
-          scale: 8,
+          scale: scale,
           fillColor: color,
           fillOpacity: 0.8,
           strokeColor: '#ffffff',
-          strokeWeight: 2,
+          strokeWeight: postCount > 1 ? 3 : 2,
         },
+        label: postCount > 1 ? {
+          text: postCount.toString(),
+          color: '#ffffff',
+          fontSize: '12px',
+          fontWeight: 'bold',
+        } : undefined,
       });
 
       marker.addListener('click', () => {
-        onMarkerClick(post);
+        // Pass the first post and all posts at this location
+        onMarkerClick(firstPost, postsAtLocation);
       });
 
       newMarkers.push(marker);

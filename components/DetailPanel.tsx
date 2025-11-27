@@ -5,13 +5,15 @@ import type { PostWithAnalysis } from '@/types';
 
 interface DetailPanelProps {
   post: PostWithAnalysis | null;
+  postsAtLocation?: PostWithAnalysis[];
   onClose: () => void;
 }
 
-export default function DetailPanel({ post, onClose }: DetailPanelProps) {
+export default function DetailPanel({ post, postsAtLocation, onClose }: DetailPanelProps) {
   useEffect(() => {
     if (post) {
       document.body.style.overflow = 'hidden';
+      setCurrentPostIndex(0); // Reset to first post when panel opens
     } else {
       document.body.style.overflow = 'unset';
     }
@@ -22,7 +24,12 @@ export default function DetailPanel({ post, onClose }: DetailPanelProps) {
 
   if (!post) return null;
 
-  const severity = post.analysis?.severity || null;
+  // Use postsAtLocation if available, otherwise just the single post
+  const postsToShow = postsAtLocation && postsAtLocation.length > 1 ? postsAtLocation : [post];
+  const [currentPostIndex, setCurrentPostIndex] = useState(0);
+  const currentPost = postsToShow[currentPostIndex];
+
+  const severity = currentPost.analysis?.severity || null;
   const severityColor =
     severity === 'Parah'
       ? 'bg-red-100 text-red-800 border-red-300'
@@ -71,10 +78,10 @@ export default function DetailPanel({ post, onClose }: DetailPanelProps) {
           </div>
 
           {/* Image */}
-          {post.image_url && (
+          {currentPost.image_url && (
             <div className="mb-4 rounded-lg overflow-hidden">
               <img
-                src={post.image_url}
+                src={currentPost.image_url}
                 alt="Post"
                 className="w-full h-48 sm:h-64 object-cover"
                 onError={(e) => {
@@ -85,7 +92,7 @@ export default function DetailPanel({ post, onClose }: DetailPanelProps) {
           )}
 
           {/* Location */}
-          {post.location_text && (
+          {currentPost.location_text && (
             <div className="mb-4">
               <div className="flex items-center space-x-2 text-gray-600">
                 <svg
@@ -107,39 +114,39 @@ export default function DetailPanel({ post, onClose }: DetailPanelProps) {
                     d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
                   />
                 </svg>
-                <span className="font-medium">{post.location_text}</span>
+                <span className="font-medium">{currentPost.location_text}</span>
               </div>
             </div>
           )}
 
           {/* AI Analysis */}
-          {post.analysis && (
+          {currentPost.analysis && (
             <div className="mb-4 space-y-3">
               <div className={`inline-block px-3 py-1 rounded-full border ${severityColor}`}>
                 <span className="text-sm font-semibold">
-                  {post.analysis.severity} - {post.analysis.category}
+                  {currentPost.analysis.severity} - {currentPost.analysis.category}
                 </span>
               </div>
 
-              {post.analysis.disaster_type && (
+              {currentPost.analysis.disaster_type && (
                 <div>
                   <span className="text-sm font-medium text-gray-700">Jenis Bencana: </span>
-                  <span className="text-sm text-gray-600">{post.analysis.disaster_type}</span>
+                  <span className="text-sm text-gray-600">{currentPost.analysis.disaster_type}</span>
                 </div>
               )}
 
-              {post.analysis.urgent_needs && (
+              {currentPost.analysis.urgent_needs && (
                 <div>
                   <span className="text-sm font-medium text-gray-700">Kebutuhan Mendesak: </span>
-                  <span className="text-sm text-gray-600">{post.analysis.urgent_needs}</span>
+                  <span className="text-sm text-gray-600">{currentPost.analysis.urgent_needs}</span>
                 </div>
               )}
 
-              {post.analysis.confidence && (
+              {currentPost.analysis.confidence && (
                 <div>
                   <span className="text-sm font-medium text-gray-700">Tingkat Keyakinan: </span>
                   <span className="text-sm text-gray-600">
-                    {(post.analysis.confidence * 100).toFixed(0)}%
+                    {(currentPost.analysis.confidence * 100).toFixed(0)}%
                   </span>
                 </div>
               )}
@@ -147,26 +154,26 @@ export default function DetailPanel({ post, onClose }: DetailPanelProps) {
           )}
 
           {/* Post Text */}
-          {(post.text || post.caption) && (
+          {(currentPost.text || currentPost.caption) && (
             <div className="mb-4">
               <h3 className="text-sm font-medium text-gray-700 mb-2">Deskripsi Postingan</h3>
               <p className="text-sm text-gray-600 whitespace-pre-wrap break-words">
-                {post.caption || post.text}
+                {currentPost.caption || currentPost.text}
               </p>
             </div>
           )}
 
           {/* Timestamp */}
-          {post.timestamp && (
+          {currentPost.timestamp && (
             <div className="text-xs text-gray-500">
-              {new Date(post.timestamp).toLocaleString('id-ID')}
+              {new Date(currentPost.timestamp).toLocaleString('id-ID')}
             </div>
           )}
 
           {/* Source Link */}
           <div className="mt-4 pt-4 border-t">
             <a
-              href={post.post_url}
+              href={currentPost.post_url}
               target="_blank"
               rel="noopener noreferrer"
               className="text-sm text-blue-600 hover:text-blue-800 transition-colors flex items-center space-x-2"
