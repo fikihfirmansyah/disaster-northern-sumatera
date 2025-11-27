@@ -4,8 +4,8 @@
 runConfig:
  cpu: 4
  memoryMiB: 4096
- maxInstances: 20
- minInstances: 1 # Keep at least 1 instance ready
+ maxInstances: 5  # Limited by quota: CpuAllocPerProjectRegion (20,000) and MemAllocPerProjectRegion (40GB)
+ minInstances: 1  # Keep at least 1 instance ready
  concurrency: 100
 
 env:
