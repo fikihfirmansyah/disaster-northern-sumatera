@@ -1,4 +1,5 @@
 import puppeteer, { type Browser, type Page } from "puppeteer-core";
+import chromium from '@sparticuz/chromium';
 import { 
   getInstagramCredentials, 
   saveInstagramCredentials, 
