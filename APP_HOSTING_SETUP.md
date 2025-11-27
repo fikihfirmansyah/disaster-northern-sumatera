@@ -38,14 +38,17 @@ Environment variables yang menggunakan `secret:` perlu dibuat di Cloud Secret Ma
 4. Klik **CREATE SECRET** untuk setiap secret berikut:
 
    - **Secret ID**: `gemini-api-key`
+
      - **Secret value**: Masukkan API key Gemini Anda
-   
+
    - **Secret ID**: `instagram-username`
+
      - **Secret value**: Masukkan username Instagram
-   
+
    - **Secret ID**: `instagram-password`
+
      - **Secret value**: Masukkan password Instagram
-   
+
    - **Secret ID**: `firebase-service-account`
      - **Secret value**: Masukkan JSON service account (sebagai string)
 
@@ -60,6 +63,7 @@ Environment variables yang menggunakan `secret:` perlu dibuat di Cloud Secret Ma
 Untuk setiap backend (production/staging), set environment variables berikut:
 
 **Public Variables (dapat di-set langsung):**
+
 ```
 NEXT_PUBLIC_GOOGLE_MAPS_API_KEY=AIzaSyASAzgFuvt6CX_7Sceff2pS96NPK4D9dkU
 GOOGLE_MAPS_API_KEY=AIzaSyASAzgFuvt6CX_7Sceff2pS96NPK4D9dkU
@@ -67,6 +71,7 @@ FIREBASE_PROJECT_ID=agatha-projects
 ```
 
 **Secrets (harus dibuat di Secret Manager):**
+
 - `gemini-api-key`
 - `instagram-username`
 - `instagram-password`
@@ -75,6 +80,7 @@ FIREBASE_PROJECT_ID=agatha-projects
 ## 📊 Resource Configuration
 
 ### Production:
+
 - CPU: 4 cores
 - Memory: 4GB
 - Min Instances: 1 (always ready)
@@ -82,6 +88,7 @@ FIREBASE_PROJECT_ID=agatha-projects
 - Concurrency: 100
 
 ### Staging:
+
 - CPU: 1 core
 - Memory: 1GB
 - Min Instances: 0
@@ -93,6 +100,7 @@ FIREBASE_PROJECT_ID=agatha-projects
 Setelah setup selesai:
 
 1. Push code ke GitHub:
+
    ```bash
    git add apphosting*.yaml
    git commit -m "Add App Hosting multi-environment configuration"
@@ -110,4 +118,3 @@ Setelah setup selesai:
 - Secrets harus dibuat di Cloud Secret Manager sebelum deploy
 - Service account App Hosting harus memiliki akses ke secrets
 - Environment variables di Console akan override values di YAML files
-

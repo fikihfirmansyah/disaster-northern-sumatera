@@ -2,13 +2,12 @@
 # This overrides default values in apphosting.yaml for production
 
 runConfig:
-  cpu: 4
-  memoryMiB: 4096
-  maxInstances: 20
-  minInstances: 1  # Keep at least 1 instance ready
-  concurrency: 100
+ cpu: 4
+ memoryMiB: 4096
+ maxInstances: 20
+ minInstances: 1 # Keep at least 1 instance ready
+ concurrency: 100
 
 env:
-  # Production-specific environment variables can be added here
-  # Values from apphosting.yaml will be used unless overridden here
-
+ # Production-specific environment variables can be added here
+ # Values from apphosting.yaml will be used unless overridden here
