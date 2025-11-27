@@ -112,9 +112,33 @@ Setelah setup selesai:
    - Merge `apphosting.yaml` dengan `apphosting.ENVIRONMENT_NAME.yaml`
    - Build dan deploy dengan konfigurasi yang sesuai
 
-## 📝 Catatan
+## 📝 Catatan Penting
 
-- Environment name di Firebase Console harus match dengan nama file: `apphosting.ENVIRONMENT_NAME.yaml`
-- Secrets harus dibuat di Cloud Secret Manager sebelum deploy
-- Service account App Hosting harus memiliki akses ke secrets
-- Environment variables di Console akan override values di YAML files
+- **Environment name** di Firebase Console harus match dengan nama file: `apphosting.ENVIRONMENT_NAME.yaml`
+- **Secrets harus dibuat** di Cloud Secret Manager sebelum deploy
+- **Service account App Hosting** harus memiliki akses ke semua secrets
+- **Secret replication**: Pilih regional replication untuk performa yang lebih baik
+- **Service account name**: `firebase-app-hosting@PROJECT_ID.iam.gserviceaccount.com`
+- Environment variables yang di-set di Console akan override values di YAML files
+
+## 🔍 Verifikasi Setup
+
+Setelah semua secrets dibuat, verifikasi dengan:
+
+1. **Check secrets di Console**: Pastikan semua 7 secrets sudah dibuat
+2. **Check permissions**: Pastikan service account memiliki akses ke semua secrets
+3. **Test deploy**: Push code dan monitor build logs untuk memastikan secrets bisa diakses
+
+## 🚨 Troubleshooting
+
+### Error: "Secret not found"
+- Pastikan secret ID di YAML match dengan secret ID di Secret Manager
+- Pastikan secret sudah dibuat di project yang benar
+
+### Error: "Permission denied"
+- Pastikan service account App Hosting memiliki role `Secret Manager Secret Accessor`
+- Check IAM permissions di Secret Manager
+
+### Error: "Secret value is empty"
+- Pastikan secret value sudah di-set saat membuat secret
+- Pastikan tidak ada whitespace atau karakter khusus yang tidak valid

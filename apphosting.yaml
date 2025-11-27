@@ -2,13 +2,26 @@
 # This file is used as fallback when environment-specific config is not found
 
 runConfig:
-  cpu: 2
-  memoryMiB: 2048
-  maxInstances: 10
-  minInstances: 0
-  concurrency: 80
+ cpu: 2
+ memoryMiB: 2048
+ maxInstances: 10
+ minInstances: 0
+ concurrency: 80
 
 env:
+  # Google Maps API Keys
+  - variable: NEXT_PUBLIC_GOOGLE_MAPS_API_KEY
+    secret: google-maps-api-key
+    availability:
+      - BUILD
+      - RUNTIME
+  
+  - variable: GOOGLE_MAPS_API_KEY
+    secret: google-maps-api-key
+    availability:
+      - BUILD
+      - RUNTIME
+  
   # Gemini AI API Key
   - variable: GEMINI_API_KEY
     secret: gemini-api-key
@@ -28,14 +41,14 @@ env:
       - RUNTIME
   
   # Firebase Configuration
+  - variable: FIREBASE_PROJECT_ID
+    secret: firebase-project-id
+    availability:
+      - BUILD
+      - RUNTIME
+  
   - variable: FIREBASE_SERVICE_ACCOUNT
     secret: firebase-service-account
     availability:
       - BUILD
       - RUNTIME
-  
-  # Note: The following variables should be set in Firebase Console > App Hosting > Configuration:
-  # - NEXT_PUBLIC_GOOGLE_MAPS_API_KEY
-  # - GOOGLE_MAPS_API_KEY
-  # - FIREBASE_PROJECT_ID
-
