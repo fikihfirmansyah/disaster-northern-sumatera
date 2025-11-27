@@ -9,19 +9,6 @@ runConfig:
   concurrency: 80
 
 env:
-  # Google Maps API Keys
-  - variable: NEXT_PUBLIC_GOOGLE_MAPS_API_KEY
-    value: google-maps-api-key
-    availability:
-      - BUILD
-      - RUNTIME
-  
-  - variable: GOOGLE_MAPS_API_KEY
-    value: google-maps-api-key
-    availability:
-      - BUILD
-      - RUNTIME
-  
   # Gemini AI API Key
   - variable: GEMINI_API_KEY
     secret: gemini-api-key
@@ -41,15 +28,14 @@ env:
       - RUNTIME
   
   # Firebase Configuration
-  - variable: FIREBASE_PROJECT_ID
-    value: ""
-    availability:
-      - BUILD
-      - RUNTIME
-  
   - variable: FIREBASE_SERVICE_ACCOUNT
     secret: firebase-service-account
     availability:
       - BUILD
       - RUNTIME
+  
+  # Note: The following variables should be set in Firebase Console > App Hosting > Configuration:
+  # - NEXT_PUBLIC_GOOGLE_MAPS_API_KEY
+  # - GOOGLE_MAPS_API_KEY
+  # - FIREBASE_PROJECT_ID
 
