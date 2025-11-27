@@ -65,13 +65,13 @@ export default function FilterPanel({ onFilterChange }: FilterPanelProps) {
   const hasActiveFilters = selectedSeverity.length > 0 || selectedDisasterTypes.length > 0 || areaSearch.length > 0;
 
   return (
-    <div className="bg-white rounded-lg shadow-lg p-6 space-y-6">
+    <div className="bg-white rounded-lg shadow-lg p-4 sm:p-6 space-y-4 sm:space-y-6">
       <div className="flex items-center justify-between">
-        <h2 className="text-xl font-semibold text-gray-800">Filters</h2>
+        <h2 className="text-lg sm:text-xl font-semibold text-gray-800">Filters</h2>
         {hasActiveFilters && (
           <button
             onClick={handleClearFilters}
-            className="text-sm text-blue-600 hover:text-blue-800 transition-colors"
+            className="text-xs sm:text-sm text-blue-600 hover:text-blue-800 transition-colors"
           >
             Clear All
           </button>

@@ -40,17 +40,19 @@ export default function DetailPanel({ post, onClose }: DetailPanelProps) {
 
       {/* Panel */}
       <div
-        className={`fixed right-0 top-0 h-full w-full md:w-96 bg-white shadow-2xl z-50 transform transition-transform duration-300 ease-in-out ${
+        className={`fixed right-0 top-0 h-full w-full sm:w-96 bg-white shadow-2xl z-50 transform transition-transform duration-300 ease-in-out ${
           post ? 'translate-x-0' : 'translate-x-full'
         } overflow-y-auto`}
+        onClick={(e) => e.stopPropagation()}
       >
-        <div className="p-6">
+        <div className="p-4 sm:p-6">
           {/* Header */}
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="text-xl font-semibold text-gray-800">Detail Informasi</h2>
+          <div className="flex items-center justify-between mb-4 sticky top-0 bg-white pb-2 border-b">
+            <h2 className="text-lg sm:text-xl font-semibold text-gray-800">Detail Informasi</h2>
             <button
               onClick={onClose}
-              className="text-gray-500 hover:text-gray-700 transition-colors"
+              className="text-gray-500 hover:text-gray-700 transition-colors p-1 -mr-1"
+              aria-label="Close"
             >
               <svg
                 className="w-6 h-6"
@@ -74,7 +76,7 @@ export default function DetailPanel({ post, onClose }: DetailPanelProps) {
               <img
                 src={post.image_url}
                 alt="Post"
-                className="w-full h-64 object-cover"
+                className="w-full h-48 sm:h-64 object-cover"
                 onError={(e) => {
                   (e.target as HTMLImageElement).src = '/placeholder-image.jpg';
                 }}
@@ -145,10 +147,12 @@ export default function DetailPanel({ post, onClose }: DetailPanelProps) {
           )}
 
           {/* Post Text */}
-          {post.text && (
+          {(post.text || post.caption) && (
             <div className="mb-4">
               <h3 className="text-sm font-medium text-gray-700 mb-2">Deskripsi Postingan</h3>
-              <p className="text-sm text-gray-600 whitespace-pre-wrap">{post.text}</p>
+              <p className="text-sm text-gray-600 whitespace-pre-wrap break-words">
+                {post.caption || post.text}
+              </p>
             </div>
           )}
 

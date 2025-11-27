@@ -13,6 +13,7 @@ export default function Home() {
   const [isLoading, setIsLoading] = useState(true);
   const [filters, setFilters] = useState<FilterOptions>({});
   const [showIsolatedAreas, setShowIsolatedAreas] = useState(true);
+  const [showMobileFilters, setShowMobileFilters] = useState(false);
 
   useEffect(() => {
     fetchPosts();
@@ -89,21 +90,22 @@ export default function Home() {
     <div className="h-screen flex flex-col">
       {/* Header */}
       <header className="bg-white shadow-sm z-10">
-        <div className="container mx-auto px-4 py-4">
+        <div className="container mx-auto px-3 sm:px-4 py-3 sm:py-4">
           <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-2xl font-bold text-gray-800">
+            <div className="flex-1 min-w-0">
+              <h1 className="text-lg sm:text-2xl font-bold text-gray-800 truncate">
                 Disaster Monitoring
               </h1>
-              <p className="text-sm text-gray-600">
+              <p className="text-xs sm:text-sm text-gray-600 truncate">
                 Aceh, Sumatra Utara, Sumatra Barat
               </p>
             </div>
             <a
               href="/admin"
-              className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors text-sm"
+              className="ml-2 px-3 sm:px-4 py-1.5 sm:py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors text-xs sm:text-sm whitespace-nowrap"
             >
-              Admin Panel
+              <span className="hidden sm:inline">Admin Panel</span>
+              <span className="sm:hidden">Admin</span>
             </a>
           </div>
         </div>
@@ -133,21 +135,32 @@ export default function Home() {
             </div>
           )}
 
-          {/* Mobile Filter Toggle */}
-          <div className="lg:hidden absolute top-4 left-4 z-20">
+          {/* Mobile Controls - Top Left */}
+          <div className="lg:hidden absolute top-3 left-3 z-20 flex flex-col gap-2">
+            {/* Mobile Filter Toggle */}
             <button
-              className="bg-white px-4 py-2 rounded-md shadow-lg text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors"
-              onClick={() => {
-                // Toggle mobile filter panel (you can implement a drawer/modal)
-                alert('Mobile filter panel - to be implemented');
-              }}
+              className="bg-white px-3 py-2 rounded-md shadow-lg text-xs font-medium text-gray-700 hover:bg-gray-50 transition-colors flex items-center space-x-1"
+              onClick={() => setShowMobileFilters(true)}
             >
-              Filters
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
+              </svg>
+              <span>Filter</span>
             </button>
           </div>
 
-          {/* Stats and Controls */}
-          <div className="absolute top-4 right-4 z-20 space-y-2">
+          {/* Mobile Stats - Top Center */}
+          <div className="lg:hidden absolute top-3 left-1/2 transform -translate-x-1/2 z-20">
+            <div className="bg-white px-3 py-1.5 rounded-md shadow-lg">
+              <div className="text-xs text-center">
+                <span className="font-semibold text-gray-800">{filteredPosts.length}</span>
+                <span className="text-gray-600"> lokasi</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Desktop Stats and Controls - Top Right */}
+          <div className="hidden lg:block absolute top-4 right-4 z-20 space-y-2">
             {/* Stats */}
             <div className="bg-white px-4 py-2 rounded-md shadow-lg">
               <div className="text-sm">
@@ -189,8 +202,47 @@ export default function Home() {
               )}
             </div>
           </div>
+
+          {/* Mobile Toggle Isolated Areas - Bottom Right */}
+          <div className="lg:hidden absolute bottom-3 right-3 z-20">
+            <button
+              className="bg-white px-3 py-2 rounded-md shadow-lg text-xs font-medium text-gray-700 hover:bg-gray-50 transition-colors flex items-center space-x-1"
+              onClick={() => setShowIsolatedAreas(!showIsolatedAreas)}
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
+              </svg>
+              <span>{showIsolatedAreas ? 'Sembunyikan' : 'Tampilkan'} Area</span>
+            </button>
+          </div>
         </main>
       </div>
+
+      {/* Mobile Filter Drawer */}
+      {showMobileFilters && (
+        <>
+          <div
+            className="lg:hidden fixed inset-0 bg-black bg-opacity-50 z-40"
+            onClick={() => setShowMobileFilters(false)}
+          />
+          <div className="lg:hidden fixed left-0 top-0 h-full w-80 bg-white shadow-2xl z-50 overflow-y-auto">
+            <div className="p-4">
+              <div className="flex items-center justify-between mb-4">
+                <h2 className="text-lg font-semibold text-gray-800">Filters</h2>
+                <button
+                  onClick={() => setShowMobileFilters(false)}
+                  className="text-gray-500 hover:text-gray-700"
+                >
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+              <FilterPanel onFilterChange={handleFilterChange} />
+            </div>
+          </div>
+        </>
+      )}
 
       {/* Detail Panel */}
       <DetailPanel post={selectedPost} onClose={() => setSelectedPost(null)} />
