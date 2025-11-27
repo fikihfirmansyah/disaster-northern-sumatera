@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import type { PostWithAnalysis } from '@/types';
 
 interface DetailPanelProps {
@@ -10,6 +10,11 @@ interface DetailPanelProps {
 }
 
 export default function DetailPanel({ post, postsAtLocation, onClose }: DetailPanelProps) {
+  // Use postsAtLocation if available, otherwise just the single post
+  const postsToShow = post && postsAtLocation && postsAtLocation.length > 1 ? postsAtLocation : (post ? [post] : []);
+  const [currentPostIndex, setCurrentPostIndex] = useState(0);
+  const currentPost = postsToShow[currentPostIndex];
+
   useEffect(() => {
     if (post) {
       document.body.style.overflow = 'hidden';
@@ -22,12 +27,7 @@ export default function DetailPanel({ post, postsAtLocation, onClose }: DetailPa
     };
   }, [post]);
 
-  if (!post) return null;
-
-  // Use postsAtLocation if available, otherwise just the single post
-  const postsToShow = postsAtLocation && postsAtLocation.length > 1 ? postsAtLocation : [post];
-  const [currentPostIndex, setCurrentPostIndex] = useState(0);
-  const currentPost = postsToShow[currentPostIndex];
+  if (!post || !currentPost) return null;
 
   const severity = currentPost.analysis?.severity || null;
   const severityColor =
@@ -55,7 +55,14 @@ export default function DetailPanel({ post, postsAtLocation, onClose }: DetailPa
         <div className="p-4 sm:p-6">
           {/* Header */}
           <div className="flex items-center justify-between mb-4 sticky top-0 bg-white pb-2 border-b">
-            <h2 className="text-lg sm:text-xl font-semibold text-gray-800">Detail Informasi</h2>
+            <div className="flex-1">
+              <h2 className="text-lg sm:text-xl font-semibold text-gray-800">Detail Informasi</h2>
+              {postsToShow.length > 1 && (
+                <p className="text-xs text-gray-500 mt-1">
+                  {currentPostIndex + 1} dari {postsToShow.length} laporan di lokasi ini
+                </p>
+              )}
+            </div>
             <button
               onClick={onClose}
               className="text-gray-500 hover:text-gray-700 transition-colors p-1 -mr-1"
@@ -76,6 +83,29 @@ export default function DetailPanel({ post, postsAtLocation, onClose }: DetailPa
               </svg>
             </button>
           </div>
+
+          {/* Navigation for multiple posts */}
+          {postsToShow.length > 1 && (
+            <div className="flex items-center justify-between mb-4 p-2 bg-gray-50 rounded-lg">
+              <button
+                onClick={() => setCurrentPostIndex(Math.max(0, currentPostIndex - 1))}
+                disabled={currentPostIndex === 0}
+                className="px-3 py-1.5 bg-white rounded-md text-sm font-medium text-gray-700 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              >
+                ← Sebelumnya
+              </button>
+              <span className="text-sm text-gray-600">
+                {currentPostIndex + 1} / {postsToShow.length}
+              </span>
+              <button
+                onClick={() => setCurrentPostIndex(Math.min(postsToShow.length - 1, currentPostIndex + 1))}
+                disabled={currentPostIndex === postsToShow.length - 1}
+                className="px-3 py-1.5 bg-white rounded-md text-sm font-medium text-gray-700 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              >
+                Selanjutnya →
+              </button>
+            </div>
+          )}
 
           {/* Image */}
           {currentPost.image_url && (
