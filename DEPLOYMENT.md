@@ -2,15 +2,17 @@
 
 ## Setup Firebase App Hosting
 
-Firebase App Hosting adalah layanan hosting terkelola yang mendukung Next.js dengan API routes. Setup dilakukan melalui Firebase Console.
+Firebase App Hosting adalah layanan hosting terkelola yang mendukung Next.js dengan API routes. Setup dilakukan melalui Firebase Console. x
 
 ### Langkah-langkah Deployment:
 
 1. **Buka Firebase Console**
+
    - Kunjungi https://console.firebase.google.com/
    - Pilih project: **gdg-medan**
 
 2. **Setup App Hosting**
+
    - Di sidebar, pilih "App Hosting" (atau "Hosting" > "App Hosting")
    - Klik "Get Started" atau "Create new app"
    - Pilih "Connect GitHub repository"
@@ -22,6 +24,7 @@ Firebase App Hosting adalah layanan hosting terkelola yang mendukung Next.js den
 
 3. **Environment Variables**
    Tambahkan environment variables berikut di Firebase Console:
+
    - `NEXT_PUBLIC_GOOGLE_MAPS_API_KEY`
    - `GOOGLE_MAPS_API_KEY`
    - `GEMINI_API_KEY`
@@ -50,6 +53,6 @@ firebase deploy --only hosting
 ### URL Deployment
 
 Setelah deploy, aplikasi akan tersedia di:
+
 - Firebase App Hosting: `https://gdg-medan.web.app` atau custom domain
 - Check di Firebase Console > App Hosting untuk URL lengkap
-
