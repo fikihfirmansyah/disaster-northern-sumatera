@@ -2,53 +2,70 @@
 # This file is used as fallback when environment-specific config is not found
 
 runConfig:
- cpu: 2
- memoryMiB: 2048
- maxInstances: 10
- minInstances: 0
- concurrency: 80
+  cpu: 2
+  memoryMiB: 2048
+  maxInstances: 10
+  minInstances: 0
+  concurrency: 80
 
 env:
- # Google Maps API Keys
- - variable: NEXT_PUBLIC_GOOGLE_MAPS_API_KEY
-   secret: google-maps-api-key
-   availability:
-    - BUILD
-    - RUNTIME
-
- - variable: GOOGLE_MAPS_API_KEY
-   secret: google-maps-api-key
-   availability:
-    - BUILD
-    - RUNTIME
-
- # Gemini AI API Key
- - variable: GEMINI_API_KEY
-   secret: gemini-api-key
-   availability:
-    - BUILD
-    - RUNTIME
-
- # Instagram Credentials
- - variable: INSTAGRAM_USERNAME
-   secret: instagram-username
-   availability:
-    - RUNTIME
-
- - variable: INSTAGRAM_PASSWORD
-   secret: instagram-password
-   availability:
-    - RUNTIME
-
- # Firebase Configuration
- - variable: FIREBASE_PROJECT_ID
-   secret: firebase-project-id
-   availability:
-    - BUILD
-    - RUNTIME
-
- - variable: FIREBASE_SERVICE_ACCOUNT
-   secret: firebase-service-account
-   availability:
-    - BUILD
-    - RUNTIME
+  # Google Maps API Keys
+  - variable: NEXT_PUBLIC_GOOGLE_MAPS_API_KEY
+    secret: google-maps-api-key
+    availability:
+      - BUILD
+      - RUNTIME
+  
+  - variable: GOOGLE_MAPS_API_KEY
+    secret: google-maps-api-key
+    availability:
+      - BUILD
+      - RUNTIME
+  
+  # Gemini AI API Key
+  - variable: GEMINI_API_KEY
+    secret: gemini-api-key
+    availability:
+      - BUILD
+      - RUNTIME
+  
+  # Instagram Credentials
+  - variable: INSTAGRAM_USERNAME
+    secret: instagram-username
+    availability:
+      - RUNTIME
+  
+  - variable: INSTAGRAM_PASSWORD
+    secret: instagram-password
+    availability:
+      - RUNTIME
+  
+  # Firebase Configuration
+  - variable: FIREBASE_PROJECT_ID
+    secret: firebase-project-id
+    availability:
+      - BUILD
+      - RUNTIME
+  
+  - variable: FIREBASE_SERVICE_ACCOUNT
+    secret: firebase-service-account
+    availability:
+      - BUILD
+      - RUNTIME
+  
+  # Chrome/Chromium path for Puppeteer
+  - variable: CHROME_PATH
+    value: /usr/bin/chromium
+    availability:
+      - RUNTIME
+  
+  - variable: PUPPETEER_SKIP_CHROMIUM_DOWNLOAD
+    value: "true"
+    availability:
+      - BUILD
+      - RUNTIME
+  
+  - variable: PUPPETEER_EXECUTABLE_PATH
+    value: /usr/bin/chromium
+    availability:
+      - RUNTIME

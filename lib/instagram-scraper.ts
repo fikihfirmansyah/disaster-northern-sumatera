@@ -1,4 +1,4 @@
-import puppeteer, { type Browser, type Page } from "puppeteer";
+import puppeteer, { type Browser, type Page } from "puppeteer-core";
 import { 
   getInstagramCredentials, 
   saveInstagramCredentials, 
@@ -254,9 +254,49 @@ async function loginToInstagram(page: Page): Promise<boolean> {
  }
 }
 
+// Get Chrome executable path for different environments
+function getChromeExecutablePath(): string | undefined {
+  // Priority 1: Environment variable (set in apphosting.yaml)
+  if (process.env.CHROME_PATH) {
+    return process.env.CHROME_PATH;
+  }
+  
+  if (process.env.PUPPETEER_EXECUTABLE_PATH) {
+    return process.env.PUPPETEER_EXECUTABLE_PATH;
+  }
+  
+  // Priority 2: Common system paths (for production/serverless)
+  const possiblePaths = [
+    '/usr/bin/chromium', // Most common in serverless environments
+    '/usr/bin/chromium-browser',
+    '/usr/bin/google-chrome',
+    '/usr/bin/google-chrome-stable',
+    '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome', // macOS
+    'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe', // Windows
+    'C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe', // Windows 32-bit
+  ];
+  
+  // Try to find Chrome in system paths
+  const fs = require('fs');
+  for (const path of possiblePaths) {
+    try {
+      if (fs.existsSync(path)) {
+        console.log(`Found Chrome at: ${path}`);
+        return path;
+      }
+    } catch (e) {
+      // Continue to next path
+    }
+  }
+  
+  // Return undefined to let Puppeteer try to find it (for local dev with puppeteer package)
+  return undefined;
+}
+
 async function getBrowser(): Promise<Browser> {
  if (!browserInstance) {
-  browserInstance = await puppeteer.launch({
+  const chromePath = getChromeExecutablePath();
+  const launchOptions: any = {
    headless: true,
    args: [
     "--no-sandbox",
@@ -264,8 +304,31 @@ async function getBrowser(): Promise<Browser> {
     "--disable-dev-shm-usage",
     "--disable-accelerated-2d-canvas",
     "--disable-gpu",
+    "--disable-software-rasterizer",
+    "--disable-extensions",
+    "--single-process", // Important for serverless environments
+    "--no-zygote",
    ],
-  });
+  };
+  
+  // Set executable path if found
+  if (chromePath) {
+    launchOptions.executablePath = chromePath;
+  }
+  
+  try {
+    browserInstance = await puppeteer.launch(launchOptions);
+  } catch (error: any) {
+    console.error('Error launching browser:', error.message);
+    // Fallback: try without executable path (for local dev)
+    if (chromePath) {
+      console.log('Retrying without explicit Chrome path...');
+      delete launchOptions.executablePath;
+      browserInstance = await puppeteer.launch(launchOptions);
+    } else {
+      throw error;
+    }
+  }
  }
  return browserInstance;
 }

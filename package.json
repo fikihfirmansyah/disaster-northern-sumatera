@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
+    "postinstall": "bash scripts/install-chrome.sh || echo 'Chrome installation skipped (may not be needed in local dev)'",
     "start": "next start",
     "lint": "eslint",
     "deploy": "npm run build && firebase deploy --only hosting"
@@ -19,7 +20,7 @@
     "firebase-admin": "^13.6.0",
     "genkit": "^1.24.0",
     "next": "16.0.5",
-    "puppeteer": "^24.31.0",
+    "puppeteer-core": "^24.31.0",
     "react": "19.2.0",
     "react-dom": "19.2.0"
   },
