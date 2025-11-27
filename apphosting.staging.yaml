@@ -1,0 +1,14 @@
+# Staging environment configuration
+# This overrides default values in apphosting.yaml for staging
+
+runConfig:
+  cpu: 1
+  memoryMiB: 1024
+  maxInstances: 5
+  minInstances: 0
+  concurrency: 40
+
+env:
+  # Staging-specific environment variables can be added here
+  # Values from apphosting.yaml will be used unless overridden here
+
