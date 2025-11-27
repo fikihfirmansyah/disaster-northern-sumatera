@@ -295,7 +295,7 @@ function getChromeExecutablePath(): string | undefined {
 
 async function getBrowser(): Promise<Browser> {
  if (!browserInstance) {
-  const chromePath = getChromeExecutablePath();
+  let chromePath = getChromeExecutablePath();
   const launchOptions: any = {
    headless: true,
    args: [
@@ -311,6 +311,18 @@ async function getBrowser(): Promise<Browser> {
    ],
   };
   
+  // Try to use @sparticuz/chromium for serverless environments (Cloud Run)
+  // This is optimized for serverless and doesn't require system Chrome
+  try {
+    if (!chromePath && process.env.NODE_ENV === 'production') {
+      console.log('Using @sparticuz/chromium for serverless environment...');
+      chromePath = await chromium.executablePath();
+      launchOptions.args = chromium.args;
+    }
+  } catch (error) {
+    console.warn('Could not get chromium executable path, trying system Chrome...', error);
+  }
+  
   // Set executable path if found
   if (chromePath) {
     launchOptions.executablePath = chromePath;
@@ -318,15 +330,36 @@ async function getBrowser(): Promise<Browser> {
   
   try {
     browserInstance = await puppeteer.launch(launchOptions);
+    console.log('Browser launched successfully');
   } catch (error: any) {
     console.error('Error launching browser:', error.message);
-    // Fallback: try without executable path (for local dev)
-    if (chromePath) {
+    
+    // Fallback 1: Try with @sparticuz/chromium if not already tried
+    if (!chromePath || !chromePath.includes('chromium')) {
+      try {
+        console.log('Trying @sparticuz/chromium as fallback...');
+        const chromiumPath = await chromium.executablePath();
+        launchOptions.executablePath = chromiumPath;
+        launchOptions.args = chromium.args;
+        browserInstance = await puppeteer.launch(launchOptions);
+        console.log('Browser launched with @sparticuz/chromium');
+      } catch (chromiumError: any) {
+        console.error('Failed to launch with @sparticuz/chromium:', chromiumError.message);
+      }
+    }
+    
+    // Fallback 2: Try without executable path (for local dev)
+    if (!browserInstance && chromePath) {
       console.log('Retrying without explicit Chrome path...');
       delete launchOptions.executablePath;
-      browserInstance = await puppeteer.launch(launchOptions);
-    } else {
-      throw error;
+      try {
+        browserInstance = await puppeteer.launch(launchOptions);
+      } catch (fallbackError: any) {
+        console.error('All browser launch attempts failed:', fallbackError.message);
+        throw new Error(`Failed to launch browser: ${fallbackError.message}. Please ensure Chrome/Chromium is installed or @sparticuz/chromium is available.`);
+      }
+    } else if (!browserInstance) {
+      throw new Error(`Failed to launch browser: ${error.message}. Please ensure Chrome/Chromium is installed.`);
     }
   }
  }
