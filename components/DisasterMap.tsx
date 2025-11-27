@@ -407,10 +407,13 @@ export default function DisasterMap({ posts, onMarkerClick, showIsolatedAreas = 
                     const nearbyPosts = posts.filter(post => {
                       if (!post.latitude || !post.longitude) return false;
                       
+                      const postLat = post.latitude;
+                      const postLng = post.longitude;
+                      
                       // Check if post is within 2km of any point on the route
                       return routePath.some(point => {
                         const pointLatLng = new window.google.maps.LatLng(point.lat, point.lng);
-                        const postLatLng = new window.google.maps.LatLng(post.latitude, post.longitude);
+                        const postLatLng = new window.google.maps.LatLng(postLat, postLng);
                         const dist = window.google.maps.geometry.spherical.computeDistanceBetween(
                           pointLatLng,
                           postLatLng
