@@ -9,46 +9,46 @@ runConfig:
  concurrency: 80
 
 env:
-  # Google Maps API Keys
-  - variable: NEXT_PUBLIC_GOOGLE_MAPS_API_KEY
-    secret: google-maps-api-key
-    availability:
-      - BUILD
-      - RUNTIME
-  
-  - variable: GOOGLE_MAPS_API_KEY
-    secret: google-maps-api-key
-    availability:
-      - BUILD
-      - RUNTIME
-  
-  # Gemini AI API Key
-  - variable: GEMINI_API_KEY
-    secret: gemini-api-key
-    availability:
-      - BUILD
-      - RUNTIME
-  
-  # Instagram Credentials
-  - variable: INSTAGRAM_USERNAME
-    secret: instagram-username
-    availability:
-      - RUNTIME
-  
-  - variable: INSTAGRAM_PASSWORD
-    secret: instagram-password
-    availability:
-      - RUNTIME
-  
-  # Firebase Configuration
-  - variable: FIREBASE_PROJECT_ID
-    secret: firebase-project-id
-    availability:
-      - BUILD
-      - RUNTIME
-  
-  - variable: FIREBASE_SERVICE_ACCOUNT
-    secret: firebase-service-account
-    availability:
-      - BUILD
-      - RUNTIME
+ # Google Maps API Keys
+ - variable: NEXT_PUBLIC_GOOGLE_MAPS_API_KEY
+   secret: google-maps-api-key
+   availability:
+    - BUILD
+    - RUNTIME
+
+ - variable: GOOGLE_MAPS_API_KEY
+   secret: google-maps-api-key
+   availability:
+    - BUILD
+    - RUNTIME
+
+ # Gemini AI API Key
+ - variable: GEMINI_API_KEY
+   secret: gemini-api-key
+   availability:
+    - BUILD
+    - RUNTIME
+
+ # Instagram Credentials
+ - variable: INSTAGRAM_USERNAME
+   secret: instagram-username
+   availability:
+    - RUNTIME
+
+ - variable: INSTAGRAM_PASSWORD
+   secret: instagram-password
+   availability:
+    - RUNTIME
+
+ # Firebase Configuration
+ - variable: FIREBASE_PROJECT_ID
+   secret: firebase-project-id
+   availability:
+    - BUILD
+    - RUNTIME
+
+ - variable: FIREBASE_SERVICE_ACCOUNT
+   secret: firebase-service-account
+   availability:
+    - BUILD
+    - RUNTIME
